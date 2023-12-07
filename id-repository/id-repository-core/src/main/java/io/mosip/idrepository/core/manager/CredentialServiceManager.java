@@ -510,12 +510,12 @@ public class CredentialServiceManager {
 			Map<String, Object> response = Map.of();
 			RestServicesConstants restServicesConstants = requestWrapper.getRequest().getRequestId() != null
 					&& !requestWrapper.getRequest().getRequestId().isEmpty()
-					? RestServicesConstants.CREDENTIAL_REQUEST_SERVICE_V2
-					: RestServicesConstants.CREDENTIAL_REQUEST_SERVICE;
+							? RestServicesConstants.CREDENTIAL_REQUEST_SERVICE_V2
+							: RestServicesConstants.CREDENTIAL_REQUEST_SERVICE;
 			Map<String, String> pathParam = requestWrapper.getRequest().getRequestId() != null
 					&& !requestWrapper.getRequest().getRequestId().isEmpty()
-					? Map.of(RID, requestWrapper.getRequest().getRequestId())
-					: Map.of();
+							? Map.of(RID, requestWrapper.getRequest().getRequestId())
+							: Map.of();
 			response = restHelper
 					.requestSync(restBuilder.buildRequest(restServicesConstants, pathParam, requestWrapper, Map.class));
 			mosipLogger.debug(IdRepoSecurityManager.getUser(), this.getClass().getCanonicalName(),
@@ -554,8 +554,8 @@ public class CredentialServiceManager {
 	}
 
 	public CredentialIssueRequestDto createCredReqDto(String id, String partnerId, LocalDateTime expiryTimestamp,
-													  Integer transactionLimit, String token, Map<? extends String, ? extends Object> idHashAttributes,String requestId
-	) {
+			Integer transactionLimit, String token, Map<? extends String, ? extends Object> idHashAttributes,String requestId
+			) {
 		Map<String, Object> data = new HashMap<>();
 		data.putAll(idHashAttributes);
 		data.put(IdRepoConstants.EXPIRY_TIMESTAMP,

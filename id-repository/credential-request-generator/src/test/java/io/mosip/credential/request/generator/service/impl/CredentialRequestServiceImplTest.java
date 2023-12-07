@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import io.mosip.idrepository.core.constant.AuditEvents;
+import io.mosip.idrepository.core.constant.AuditModules;
+import io.mosip.idrepository.core.constant.IdType;
+import io.mosip.idrepository.core.dto.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,12 +40,6 @@ import io.mosip.credential.request.generator.entity.CredentialEntity;
 import io.mosip.credential.request.generator.exception.CredentialRequestGeneratorException;
 import io.mosip.credential.request.generator.util.CacheUtil;
 import io.mosip.credential.request.generator.util.Utilities;
-import io.mosip.idrepository.core.dto.CredentialIssueRequest;
-import io.mosip.idrepository.core.dto.CredentialIssueRequestDto;
-import io.mosip.idrepository.core.dto.CredentialIssueResponse;
-import io.mosip.idrepository.core.dto.CredentialIssueStatusResponse;
-import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
-import io.mosip.idrepository.core.dto.PageDto;
 import io.mosip.idrepository.core.helper.AuditHelper;
 import io.mosip.idrepository.core.util.EnvUtil;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -102,7 +100,7 @@ public class CredentialRequestServiceImplTest {
 
 	@Test
 	public void testCreateCredentialIssuanceByRidSuccess() throws JsonProcessingException {
-		CredentialIssueRequestDto credentialIssueRequestDto=new CredentialIssueRequestDto();
+		CredentialIssueRequest credentialIssueRequestDto=new CredentialIssueRequest();
 		credentialIssueRequestDto.setCredentialType("MOSIP");
 		credentialIssueRequestDto.setId("123");
 		credentialIssueRequestDto.setEncrypt(true);
@@ -118,7 +116,7 @@ public class CredentialRequestServiceImplTest {
 	@Test
 	public void testDataAccessLayerExceptionForCreateCredentialByRid() throws JsonProcessingException {
 		org.mockito.Mockito.doThrow(new DataAccessLayerException("", "", new Throwable())).when(credentialDao).save(Mockito.any());
-		CredentialIssueRequestDto credentialIssueRequestDto=new CredentialIssueRequestDto();
+		CredentialIssueRequest credentialIssueRequestDto=new CredentialIssueRequest();
 		credentialIssueRequestDto.setCredentialType("MOSIP");
 		credentialIssueRequestDto.setId("123");
 		credentialIssueRequestDto.setEncrypt(true);

@@ -1,7 +1,9 @@
 package io.mosip.idrepository.identity.service.impl;
 
-import static io.mosip.idrepository.core.constant.HandleStatusLifecycle.DELETE;
-import static io.mosip.idrepository.core.constant.IdRepoConstants.*;
+import static io.mosip.idrepository.core.constant.IdRepoConstants.CBEFF_FORMAT;
+import static io.mosip.idrepository.core.constant.IdRepoConstants.FILE_FORMAT_ATTRIBUTE;
+import static io.mosip.idrepository.core.constant.IdRepoConstants.FILE_NAME_ATTRIBUTE;
+import static io.mosip.idrepository.core.constant.IdRepoConstants.SPLITTER;
 import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.*;
 
 import java.io.IOException;
@@ -246,18 +248,7 @@ public class IdRepoServiceImpl<T> implements IdRepoService<IdRequestDTO<T>, Uin>
 
 	@Value("${mosip.idrepo.credential.request.enable-convention-based-id:false}")
 	private boolean enableConventionBasedId;
-
-
-	@Value("${" + UIN_REFID + "}")
-	private String uinRefId;
-
-	@Value("${mosip.idrepo.update-identity.trim-whitespaces:true}")
-	private boolean trimWhitespaces;
-
-	@Value("#{${mosip.idrepo.update-identity.fields-to-replace}}")
-	private List<String> fieldsToReplaceOnUpdate;
-
-
+	
 	/**
 	 * Adds the identity to DB.
 	 *
@@ -720,6 +711,7 @@ public class IdRepoServiceImpl<T> implements IdRepoService<IdRequestDTO<T>, Uin>
 	 *
 	 * @param dbData           the db data
 	 * @param comparisonResult the comparison result
+	 * @param attribute
 	 * @throws IdRepoAppException the id repo app exception
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -834,6 +826,7 @@ public class IdRepoServiceImpl<T> implements IdRepoService<IdRequestDTO<T>, Uin>
 	/**
 	 * Update documents.
 	 *
+	 * @param uinHashwithSalt    the uin hash
 	 * @param uinObject  the uin object
 	 * @param requestDTO the request DTO
 	 * @throws IdRepoAppException the id repo app exception
@@ -998,7 +991,6 @@ public class IdRepoServiceImpl<T> implements IdRepoService<IdRequestDTO<T>, Uin>
 					.collect(Collectors.toMap(attribute -> attribute, updateCountMapFromPolicy::get));
 		}
 	}
-
 
 	private void issueCredential(String enryptedUin, String uinHash, String uinStatus, LocalDateTime expiryTimestamp, String requestId) {
 		List<CredentialRequestStatus> credStatusList = credRequestRepo.findByIndividualIdHash(uinHash);
