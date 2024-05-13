@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import javax.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
@@ -35,6 +36,14 @@ public class Handle implements HandleInfo {
 
     @Column(name = "cr_dtimes")
     private LocalDateTime createdDateTime;
+
+	@NotNull
+	@Column(name = "is_active")
+	private Boolean isActive = true;
+
+	@NotNull
+	@Column(name = "is_deleted")
+	private Boolean isDeleted = false;
 
     @Override
     public String getHandle() {
