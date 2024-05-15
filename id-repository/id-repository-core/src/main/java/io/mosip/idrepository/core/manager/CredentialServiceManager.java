@@ -653,7 +653,7 @@ public class CredentialServiceManager {
 
 	private List<Handle> getHandlesList(String uin) {
 		if(handleRepo == null) {
-			mosipLogger.error(IdRepoSecurityManager.getUser(), this.getClass().getCanonicalName(), "getHandles",
+			mosipLogger.error(IdRepoSecurityManager.getUser(), this.getClass().getCanonicalName(), "getHandlesList",
 					"HandleRepo is NULL");
 			return List.of();
 		}
@@ -687,7 +687,7 @@ public class CredentialServiceManager {
 					handleInfoDTO.getAdditionalData().put("idType", IdType.HANDLE.getIdType());
 					handleInfoDTOS.add(handleInfoDTO);
 				} catch (IdRepoAppException e) {
-					mosipLogger.error(IdRepoSecurityManager.getUser(), SEND_REQUEST_TO_CRED_SERVICE, "getHandles",
+					mosipLogger.error(IdRepoSecurityManager.getUser(), SEND_REQUEST_TO_CRED_SERVICE, "getHandlesInfo",
 							"\n Failed to decrypt handle due to " + e.getMessage());
 				}
 			}
