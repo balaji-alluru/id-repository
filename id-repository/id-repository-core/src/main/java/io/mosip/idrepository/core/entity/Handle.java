@@ -2,15 +2,12 @@ package io.mosip.idrepository.core.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import javax.validation.constraints.NotNull;
-
 import java.time.LocalDateTime;
 
 @Data
@@ -31,8 +28,8 @@ public class Handle implements HandleInfo {
     @Column(name = "handle_hash")
     private String handleHash;
 
-	@Column(name = "status")
-	private String status;
+    @Column(name = "status")
+    private String status;
 
     @Column(name = "cr_by")
     private String createdBy;
