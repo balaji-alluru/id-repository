@@ -498,6 +498,38 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 		}
 	}
 
+	/**
+	 * trim data inside identity
+	 * 
+	 * @param request
+	 * @throws IdRepoAppException
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void updateRequestBodyData(IdRequestDTO request) throws IdRepoAppException {
+		if (trimWhitespaces && Objects.nonNull(request.getRequest().getIdentity())) {
+			Map<String, Object> identityData = idRepoServiceHelper.convertToMap(request.getRequest().getIdentity());
+			Map<String, Object> updatedIdentityData = identityData.entrySet().stream().map(attributeData -> {
+				if (attributeData.getValue() instanceof String) {
+					attributeData.setValue(((String) attributeData.getValue()).trim());
+				} else if (attributeData.getValue() instanceof List) {
+					((List<Object>) attributeData.getValue()).forEach(obj -> {
+						if (obj instanceof Map) {
+							String trimValue = ((String) ((Map) obj).get(VALUE)).trim();
+							((Map) obj).put(VALUE, trimValue);
+						} else if (obj instanceof String) {
+							// TODO trim whitespaces
+						}
+					});
+				} else if (attributeData.getValue() instanceof Map) {
+					String trimValue = ((String) ((Map) attributeData.getValue()).get(VALUE)).trim();
+					((Map) attributeData.getValue()).put(VALUE, trimValue);
+				}
+				return attributeData;
+			}).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+			request.getRequest().setIdentity(updatedIdentityData);
+		}
+	}
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void updateVerifiedAttributes(RequestDTO requestDTO, DocumentContext inputData, DocumentContext dbData) {
 		List dbVerifiedAttributes = (List) dbData.read(".verifiedAttributes");
