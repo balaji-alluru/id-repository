@@ -1005,7 +1005,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	 * @param request IdRequestDTO
 	 * @param uinHash
 	 * @param method
-	 * @return
+	 * @return handles map
 	 * @throws IdRepoAppException
 	 */
 	private Map<String, HandleDto> checkAndGetHandles(IdRequestDTO request, String uinHash, String method)
