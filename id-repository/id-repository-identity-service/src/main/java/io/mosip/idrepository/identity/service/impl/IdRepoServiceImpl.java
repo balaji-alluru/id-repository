@@ -939,14 +939,14 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 				credStatus.setStatus(CredentialRequestStatusLifecycle.NEW.toString());
 				credStatus.setUpdatedBy(IdRepoSecurityManager.getUser());
 				credStatus.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
-				credRequestRepo.save(credStatus);
+				credRequestRepo.saveAndFlush(credStatus);
 			});
 		} else if (!credStatusList.isEmpty() && !uinStatus.contentEquals(activeStatus)) {
 			credStatusList.forEach(credStatus -> {
 				credStatus.setStatus(CredentialRequestStatusLifecycle.DELETED.toString());
 				credStatus.setUpdatedBy(IdRepoSecurityManager.getUser());
 				credStatus.setUpdDTimes(DateUtils.getUTCCurrentDateTime());
-				credRequestRepo.save(credStatus);
+				credRequestRepo.saveAndFlush(credStatus);
 			});
 		} else if (credStatusList.isEmpty()) {
 			CredentialRequestStatus credStatus = new CredentialRequestStatus();
@@ -960,8 +960,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 			credStatus.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 			if(enableConventionBasedId && (requestId != null)) {
 				credStatus.setRequestId(requestId);
-			}
-			credRequestRepo.save(credStatus);
+			} 
+			credRequestRepo.saveAndFlush(credStatus);
 		}
 	}
 
