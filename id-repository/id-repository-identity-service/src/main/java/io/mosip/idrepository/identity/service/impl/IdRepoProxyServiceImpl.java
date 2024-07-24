@@ -638,8 +638,8 @@ public class IdRepoProxyServiceImpl<T> implements IdRepoService<IdRequestDTO<T>,
 				response.setDocuments(documents);
 			}
 			ObjectNode identityObject = convertToObject(uin.getUinData(), ObjectNode.class);
-			response.setVerifiedAttributes(mapper.convertValue(identityObject.get(VERIFIED_ATTRIBUTES), Object.class));
-			identityObject.remove(VERIFIED_ATTRIBUTES);
+			response.setVerifiedAttributes(mapper.convertValue(identityObject.get("verifiedAttributes"), List.class));
+			identityObject.remove("verifiedAttributes");
 			response.setIdentity(identityObject);
 		}
 		idResponse.setResponse(response);
@@ -662,6 +662,7 @@ public class IdRepoProxyServiceImpl<T> implements IdRepoService<IdRequestDTO<T>,
 			throw new IdRepoAppException(ID_OBJECT_PROCESSING_FAILED, e);
 		}
 	}
+
 	private void notify(String uin,boolean isUpdate, String txnId) {
 		try {
 			sendGenericIdentityEvents(uin, isUpdate, txnId);
