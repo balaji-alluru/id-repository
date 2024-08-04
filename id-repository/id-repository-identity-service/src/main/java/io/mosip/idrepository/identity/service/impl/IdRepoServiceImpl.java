@@ -1,5 +1,36 @@
 package io.mosip.idrepository.identity.service.impl;
 
+import static io.mosip.idrepository.core.constant.HandleStatusLifecycle.DELETE;
+import static io.mosip.idrepository.core.constant.IdRepoConstants.*;
+import static io.mosip.idrepository.core.constant.IdRepoErrorConstants.*;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import javax.annotation.Resource;
+
+import io.mosip.idrepository.core.entity.Handle;
+import io.mosip.idrepository.core.repository.HandleRepo;
+import org.apache.commons.lang3.RegExUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.skyscreamer.jsonassert.FieldComparisonFailure;
+import org.skyscreamer.jsonassert.JSONCompare;
+import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.skyscreamer.jsonassert.JSONCompareResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -1070,7 +1101,7 @@ public class IdRepoServiceImpl<T> implements IdRepoService<IdRequestDTO<T>, Uin>
 		return handles;
 	}
 
-	private void addIdentityHandle(Uin uinEntity, Map<String, List<HandleDto>> handles) {
+	private void addIdentityHandle(Uin uinEntity, Map<String, List<HandleDto>> handles) throws IdRepoAppException {
 		if(handles == null)
 			return;
 
@@ -1080,15 +1111,21 @@ public class IdRepoServiceImpl<T> implements IdRepoService<IdRequestDTO<T>, Uin>
 				String encryptSalt = uinEncryptSaltRepo.retrieveSaltById(saltId);
 				String handleToEncrypt = saltId + SPLITTER + handleDto.getHandle() + SPLITTER + encryptSalt;
 
+				Optional<Handle> result = handleRepo.findByHandleHash(handleDto.getHandleHash());
+				if(result.isPresent()) {
+					throw new IdRepoAppException(HANDLE_RECORD_EXISTS.getErrorCode(),
+							String.format(HANDLE_RECORD_EXISTS.getErrorMessage(), entry.getKey()));
+				}
+
 				Handle handleEntity = new Handle();
 				handleEntity.setHandleHash(handleDto.getHandleHash());
 				handleEntity.setId(UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID,
 						handleDto.getHandle() + SPLITTER + DateUtils.getUTCCurrentDateTime()).toString());
 				handleEntity.setHandle(handleToEncrypt);
 				handleEntity.setUinHash(uinEntity.getUinHash());
-				handleEntity.setStatus(HandleStatusLifecycle.ACTIVATED.name());
 				handleEntity.setCreatedBy(IdRepoSecurityManager.getUser());
 				handleEntity.setCreatedDateTime(DateUtils.getUTCCurrentDateTime());
+				handleEntity.setStatus(HandleStatusLifecycle.ACTIVATED.name());
 				handleRepo.save(handleEntity);
 				mosipLogger.debug(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY_HANDLE,
 						"Record successfully saved in db");
@@ -1141,7 +1178,7 @@ public class IdRepoServiceImpl<T> implements IdRepoService<IdRequestDTO<T>, Uin>
 		for(String handleHash : handleHashesToBeDeleted) {
 			//Update the handle status as 'DELETE' in the "mosip_idrepo.handle" table
 			//and will delete the record after getting an acknowledgement from IDA.
-			handleRepo.updateStatusByHandleHash(handleHash, HandleStatusLifecycle.DELETE.name());
+			handleRepo.updateStatusByHandleHash(handleHash, DELETE.name());
 			mosipLogger.debug(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, "getNewAndDeleteExistingHandles", "Record successfully updated in db");
 		}
 		return inputSelectedHandlesMap;
