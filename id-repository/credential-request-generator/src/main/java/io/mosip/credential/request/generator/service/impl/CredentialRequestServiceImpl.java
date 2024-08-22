@@ -57,7 +57,7 @@ public class CredentialRequestServiceImpl implements CredentialRequestService {
 
 	@Autowired
 	private CredentialDao credentialDao;
-
+	
 	/** The Constant USER. */
 	private static final String PRINT_USER = "service-account-mosip-print-client";
 
@@ -156,7 +156,6 @@ public class CredentialRequestServiceImpl implements CredentialRequestService {
 				"started creating credential");
 		List<ServiceError> errorList = new ArrayList<>();
 		ResponseWrapper<CredentialIssueResponse> credentialIssueResponseWrapper = new ResponseWrapper<CredentialIssueResponse>();
-
 		CredentialIssueResponse credentialIssueResponse = null;
 		try{
 			CredentialEntity credential=new CredentialEntity();
@@ -483,7 +482,7 @@ public class CredentialRequestServiceImpl implements CredentialRequestService {
 		CredentialIssueResponse credentialIssueResponse = null;
 		try {
 			Optional<CredentialEntity> entity = credentialDao.findById(requestId);
-			if (entity != null && !entity.isEmpty()) {
+			if (entity.isPresent()) {
 				CredentialEntity credentialEntity = entity.get();
 
 				credentialEntity.setStatusCode(CredentialStatusCode.RETRY.name());

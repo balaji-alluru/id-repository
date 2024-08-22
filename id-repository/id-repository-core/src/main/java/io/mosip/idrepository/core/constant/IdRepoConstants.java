@@ -234,7 +234,6 @@ public class IdRepoConstants {
 	/** The Constant DEMOGRAPHICS. */
 	public static final String DEMOGRAPHICS = "Demographics";
 
-
 	public static final String DRAFT_RECORD_NOT_FOUND = "DRAFT RECORD NOT FOUND";
 
 	public static final String VERIFIED_ATTRIBUTES = "verifiedAttributes";

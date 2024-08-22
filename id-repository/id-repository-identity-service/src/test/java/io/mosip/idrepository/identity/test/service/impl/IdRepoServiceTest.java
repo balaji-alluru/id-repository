@@ -171,9 +171,6 @@ public class IdRepoServiceTest {
 	private UinRepo uinRepo;
 
 	@Mock
-	private IdRepoServiceHelper idRepoServiceHelper;
-
-	@Mock
 	private UinDraftRepo uinDraftRepo;
 
 	/** The uin history repo. */
@@ -232,7 +229,7 @@ public class IdRepoServiceTest {
 
 	/**
 	 * Setup.
-	 *
+	 * 
 	 * @throws IOException
 	 * @throws FileNotFoundException
 	 * @throws IdRepoDataValidationException

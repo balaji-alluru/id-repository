@@ -25,7 +25,7 @@ public class RequestValidator {
         validateDataToCheckNullOrEmpty(requestWrapper.getRequest().getCredentialType(),
                 CREDENTIAL_TYPE);
         validateDataToCheckNullOrEmpty(requestWrapper.getRequest().getIssuer(), ISSUER);
-
+       
     }
 
     private void validateAPIRequestToCheckNull(RequestWrapper<CredentialIssueRequest> requestWrapper) throws IdRepoAppException {

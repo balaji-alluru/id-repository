@@ -242,6 +242,7 @@ public class IdRepoServiceHelper {
                     .parse(schema)
                     .read("$['properties']['identity']['properties'][*][?(@['handle']==true)]");
         } catch (PathNotFoundException ex) { /*ignore this exception*/ }
+
         paths.forEach( path -> {
             // returns in below format, so need to remove parent paths
             //Eg: "$['properties']['identity']['properties']['phone']"

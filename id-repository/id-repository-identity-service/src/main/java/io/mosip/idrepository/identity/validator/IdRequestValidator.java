@@ -156,7 +156,7 @@ public class IdRequestValidator extends BaseIdRepoValidator implements Validator
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.springframework.validation.Validator#supports(java.lang.Class)
 	 */
 	@Override
@@ -167,7 +167,7 @@ public class IdRequestValidator extends BaseIdRepoValidator implements Validator
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.springframework.validation.Validator#validate(java.lang.Object,
 	 * org.springframework.validation.Errors)
 	 */
@@ -287,13 +287,13 @@ public class IdRequestValidator extends BaseIdRepoValidator implements Validator
 							index -> errors.rejectValue(REQUEST,
 									e.getCodes().get(index).equals(
 											IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getErrorCode())
-											? INVALID_INPUT_PARAMETER.getErrorCode()
-											: MISSING_INPUT_PARAMETER.getErrorCode(),
+													? INVALID_INPUT_PARAMETER.getErrorCode()
+													: MISSING_INPUT_PARAMETER.getErrorCode(),
 									String.format(
 											e.getCodes().get(index)
 													.equals(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getErrorCode())
-													? INVALID_INPUT_PARAMETER.getErrorMessage()
-													: MISSING_INPUT_PARAMETER.getErrorMessage(),
+															? INVALID_INPUT_PARAMETER.getErrorMessage()
+															: MISSING_INPUT_PARAMETER.getErrorMessage(),
 											Arrays.asList(e.getErrorTexts().get(index).split("-")[1].trim().split("\\|")).stream()
 													.collect(Collectors.joining(" | ")))));
 		} catch (InvalidIdSchemaException | IdObjectIOException e) {
@@ -400,6 +400,7 @@ public class IdRequestValidator extends BaseIdRepoValidator implements Validator
 		}
 	}
 
+
 	/**
 	 * Validate uin.
 	 *
@@ -488,7 +489,7 @@ public class IdRequestValidator extends BaseIdRepoValidator implements Validator
 	}
 
 	public void validateIdvId(String individualId, IdType idType) throws IdRepoAppException {
-		if ((idType == IdType.UIN && !this.validateUin(individualId))
+		if ((idType != IdType.UIN && idType != IdType.VID) || (idType == IdType.UIN && !this.validateUin(individualId))
 				|| (idType == IdType.VID && !this.validateVid(individualId))) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REQUEST_VALIDATOR, "getIdType", "Invalid ID");
 			throw new IdRepoAppException(INVALID_INPUT_PARAMETER.getErrorCode(),
