@@ -440,7 +440,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 			if(sharableAttributeList != null) {
 				PartnerExtractorResponse partnerExtractorResponse = policyUtil
 						.getPartnerExtractorFormat(policyResponseDto.getPolicyId(),
-								partnerId, requested);
+								partnerId, requestId);
 				 System.out.println("--------------------policy extracter details----------------------");
 		        	System.out.println(partnerExtractorResponse.toString());
 		        	System.out.println("------------------------------------------");
