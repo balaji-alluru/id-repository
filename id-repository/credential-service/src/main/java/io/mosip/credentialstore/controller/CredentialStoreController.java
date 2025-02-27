@@ -52,7 +52,9 @@ public class CredentialStoreController {
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	public ResponseEntity<Object> credentialIssue(
 			@RequestBody(required = true) CredentialServiceRequestDto credentialServiceRequestDto) {
-		
+		System.out.println("--------------------cred req dto----------------------");
+		System.out.println(credentialServiceRequestDto.toString());
+		System.out.println("------------------------------------------");
 		CredentialServiceResponseDto credentialIssueResponseDto = credentialStoreService
 				.createCredentialIssuance(credentialServiceRequestDto);
 
