@@ -168,6 +168,9 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 		try {
 			boolean containsSharableAttributes = Optional.ofNullable(credentialServiceRequestDto.getSharableAttributes()).filter(list -> !list.isEmpty()).isPresent();
 			PartnerCredentialTypePolicyDto policyDetailResponseDto = getPolicy(credentialServiceRequestDto, containsSharableAttributes);
+			System.out.println("--------------------policy details----------------------");
+		        System.out.println(policyDetailResponseDto.toString());
+		        System.out.println("------------------------------------------");
 
 			if (credentialServiceRequestDto.getAdditionalData() == null) {
 				Map<String, Object> additionalData = new HashMap<>();
@@ -176,8 +179,14 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 
 			Map<String, String> bioAttributeFormatterMap = getFormatters(policyDetailResponseDto,
 					credentialServiceRequestDto.getIssuer(), credentialServiceRequestDto.getRequestId());
+			System.out.println("--------------------bio att details----------------------");
+		        System.out.println(bioAttributeFormatterMap.toString());
+		        System.out.println("------------------------------------------");
 			IdResponseDTO idResponseDto = idrepositaryUtil.getData(credentialServiceRequestDto,
 					bioAttributeFormatterMap);
+                        System.out.println("--------------------idres details----------------------");
+		        System.out.println(idResponseDto.toString());
+		        System.out.println("------------------------------------------");
 
 
 			credentialProvider = getProvider(credentialServiceRequestDto.getCredentialType());
@@ -185,6 +194,9 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 			Map<AllowedKycDto, Object> shrableAttributesMap = credentialProvider.prepareSharableAttributes(
 					idResponseDto, policyDetailResponseDto,
 					credentialServiceRequestDto);
+			 System.out.println("--------------------sharable att details----------------------");
+		        System.out.println(shrableAttributesMap.toString());
+		        System.out.println("------------------------------------------");
 			DataProviderResponse dataProviderResponse = credentialProvider
 					.getFormattedCredentialData(
 					credentialServiceRequestDto, shrableAttributesMap);
@@ -194,6 +206,9 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 			String signature = null;
 			String encodedData = null;
 			jsonData = JsonUtil.objectMapperObjectToJson(dataProviderResponse.getJSON());
+			System.out.println("--------------------idres json details----------------------");
+		        System.out.println(jsonData.toString());
+		        System.out.println("------------------------------------------");
 			encodedData = CryptoUtil.encodeToURLSafeBase64(jsonData.getBytes());
 			if (policyDetailResponseDto.getPolicies() != null && policyDetailResponseDto.getPolicies().getDataSharePolicies().getTypeOfShare()
 					.equalsIgnoreCase(DATASHARE)) {
@@ -201,6 +216,9 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 						credentialServiceRequestDto.getIssuer(),
 						credentialServiceRequestDto.getRequestId());
 				credentialServiceResponse.setDataShareUrl(dataShare.getUrl());
+		        System.out.println("--------------------datashare att details----------------------");
+		        System.out.println(dataShare.toString());
+		        System.out.println("------------------------------------------");
 
 			} else {
 
@@ -422,7 +440,11 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 			if(sharableAttributeList != null) {
 				PartnerExtractorResponse partnerExtractorResponse = policyUtil
 						.getPartnerExtractorFormat(policyResponseDto.getPolicyId(),
-								partnerId, requestId);
+								partnerId, requested);
+				 System.out.println("--------------------policy extracter details----------------------");
+		        	System.out.println(partnerExtractorResponse.toString());
+		        	System.out.println("------------------------------------------");
+
 				if (partnerExtractorResponse != null) {
 				List<PartnerExtractor> partnerExtractorList = partnerExtractorResponse.getExtractors();
 					sharableAttributeList.forEach(dto -> {
@@ -432,10 +454,19 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 								if (partnerExtractorDto.getAttributeName().equalsIgnoreCase(dto.getAttributeName())) {
 									if(partnerExtractorDto.getBiometric().contains(CredentialConstants.FACE)){
 										formatterMap.put(CredentialConstants.FACE, getFormat(partnerExtractorDto));
+										 System.out.println("--------------------policy extracter Face details----------------------");
+		        						         System.out.println(formatterMap.toString());
+		        							System.out.println("------------------------------------------");
 									} else if (partnerExtractorDto.getBiometric().contains(CredentialConstants.IRIS)) {
 										formatterMap.put(CredentialConstants.IRIS, getFormat(partnerExtractorDto));
+										System.out.println("--------------------policy extracter IRIS details----------------------");
+		        						         System.out.println(formatterMap.toString());
+		        							System.out.println("------------------------------------------");
 									} else if (partnerExtractorDto.getBiometric().contains(CredentialConstants.FINGER)) {
 										formatterMap.put(CredentialConstants.FINGER, getFormat(partnerExtractorDto));
+										System.out.println("--------------------policy extracter FINGER details----------------------");
+		        						         System.out.println(formatterMap.toString());
+		        							System.out.println("------------------------------------------");
 					               }
 								}
 							});
@@ -444,6 +475,9 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 				}
 			}
 		}
+		System.out.println("--------------------policy extracter biometrics details----------------------");
+		System.out.println(formatterMap.toString());
+		System.out.println("------------------------------------------");
 		return formatterMap;
 	}
 
