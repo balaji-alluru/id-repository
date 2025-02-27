@@ -239,13 +239,22 @@ public class CredentialProvider {
 					"Preparing demo and bio sharable attributes");
 			Map<AllowedKycDto, Object> attributesMap = new HashMap<>();
 			JSONObject identity = new JSONObject((Map) idResponseDto.getResponse().getIdentity());
+			System.out.println("--------------------cred prov json data----------------------");
+			System.out.println(identity.toString());
+			System.out.println("------------------------------------------");
 
 			final List<AllowedKycDto> sharableAttributeFromPolicy = Optional.ofNullable(policyResponseDto.getPolicies())
 					.map(PolicyAttributesDto::getShareableAttributes).orElseGet(List::of);
+			System.out.println("--------------------cred prov sharable att data----------------------");
+			System.out.println(sharableAttributeFromPolicy.toString());
+			System.out.println("------------------------------------------");
 			List<AllowedKycDto> sharableAttributeList = sharableAttributeFromPolicy;
 			Set<AllowedKycDto> sharableAttributeDemographicKeySet = new HashSet<>();
 			Set<AllowedKycDto> sharableAttributeBiometricKeySet = new HashSet<>();
 			List<String> userRequestedAttributes = credentialServiceRequestDto.getSharableAttributes();
+			System.out.println("--------------------cred prov usr req att data----------------------");
+			System.out.println(userRequestedAttributes.toString());
+			System.out.println("------------------------------------------");
 			Map<String, Object> additionalData = credentialServiceRequestDto.getAdditionalData();
 			if (userRequestedAttributes != null && !userRequestedAttributes.isEmpty()) {
 				if ((sharableAttributeList == null || sharableAttributeList.isEmpty())) {
@@ -258,6 +267,9 @@ public class CredentialProvider {
 					sharableAttributeList = sharableAttributeList.stream()
 							.filter(attrib -> userRequestedAttributes.contains(attrib.getAttributeName()))
 							.collect(Collectors.toCollection(ArrayList<AllowedKycDto>::new));
+					System.out.println("--------------------cred prov sharable att list data----------------------");
+					System.out.println(sharableAttributeList.toString());
+					System.out.println("------------------------------------------");
 					final List<AllowedKycDto> sharableAttributeListRef = sharableAttributeList;
 					List<AllowedKycDto> intermediateList = userSharableAttributeList.stream().filter(attrib -> {
 								//Check if name attribute and it is equals to 'name' of 'fullName' and if it is present in the sharable attributes from policy
@@ -277,6 +289,9 @@ public class CredentialProvider {
 							})
 							.collect(Collectors.toList());
 					sharableAttributeList.addAll(intermediateList);
+					System.out.println("--------------------cred prov final sharable att list data----------------------");
+					System.out.println(sharableAttributeList.toString());
+					System.out.println("------------------------------------------");
 				}
 			}
 			if (userRequestedAttributes != null && !userRequestedAttributes.isEmpty()) {
@@ -295,6 +310,13 @@ public class CredentialProvider {
 						}
 					}
 				});
+				System.out.println("--------------------cred prov final sharable att bio data----------------------");
+				System.out.println(sharableAttributeBiometricKeySet.toString());
+				System.out.println("------------------------------------------");
+				System.out.println("--------------------cred prov final sharable att demo data----------------------");
+				System.out.println(sharableAttributeDemographicKeySet.toString());
+				System.out.println("------------------------------------------");
+
 
 			} else {
 				LOGGER.debug(IdRepoSecurityManager.getUser(), LoggerFileConstant.REQUEST_ID.toString(), requestId,
@@ -310,6 +332,12 @@ public class CredentialProvider {
 					}
 
 				});
+				System.out.println("--------------------cred prov final sharable att bio data if empty----------------------");
+				System.out.println(sharableAttributeBiometricKeySet.toString());
+				System.out.println("------------------------------------------");
+				System.out.println("--------------------cred prov final sharable att demo data----------------------");
+				System.out.println(sharableAttributeDemographicKeySet.toString());
+				System.out.println("------------------------------------------");
 			}
 
 			List<String> userReqMaskingAttributes = (List<String>) additionalData.get(CredentialConstants.MASKING_ATTRIBUTES);
@@ -360,15 +388,22 @@ public class CredentialProvider {
 					attributesMap.put(key, vidInfoDTO.getVid());
 					additionalData.put("ExpiryTimestamp", vidInfoDTO.getExpiryTimestamp().toString());
 					additionalData.put("TransactionLimit", vidInfoDTO.getTransactionLimit());
+					
 				}
 			}
 
 			credentialServiceRequestDto.setAdditionalData(additionalData);
 			String individualBiometricsValue = null;
 			List<DocumentsDTO> documents = idResponseDto.getResponse().getDocuments();
+			System.out.println("--------------------cred prov bio documents data----------------------");
+			System.out.println(documents.toString());
+			System.out.println("------------------------------------------");
 
 			for (AllowedKycDto key : sharableAttributeBiometricKeySet) {
 				String attribute = key.getSource().get(0).getAttribute();
+				System.out.println("--------------------cred prov bio att data----------------------");
+				System.out.println(attribute.toString());
+				System.out.println("------------------------------------------");
 				for (DocumentsDTO doc : documents) {
 					if (doc.getCategory().equals(attribute)) {
 						individualBiometricsValue = doc.getValue();
@@ -396,6 +431,9 @@ public class CredentialProvider {
 						attributesMap.put(key, cbeff);
 					}
 				}
+				System.out.println("--------------------cred prov final att data----------------------");
+				System.out.println(attributesMap.toString());
+				System.out.println("------------------------------------------");
 
 			}
 			LOGGER.debug(IdRepoSecurityManager.getUser(), LoggerFileConstant.REQUEST_ID.toString(), requestId,
